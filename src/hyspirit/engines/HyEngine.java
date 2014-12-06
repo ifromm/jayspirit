@@ -39,7 +39,8 @@ import java.util.Enumeration;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class implements all required methods and communications for the
@@ -72,10 +73,10 @@ public abstract class HyEngine implements Runnable {
     private String percentageCPU;
 
     protected final static String STREAM_END_MESSAGE = "#! END";
-
     protected String argumentString = null;
 
-    protected static Logger LOG = Logger.getLogger(HyEngine.class);
+    protected static Logger LOG = LogManager
+	    .getLogger(HyEngine.class.getName());
 
     private boolean suppressSTDERR = false;
 
