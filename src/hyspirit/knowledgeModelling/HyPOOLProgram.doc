@@ -1,0 +1,9 @@
+/** The HyPOOLProgram class allows for the creation, management and
+ * execution of POOL programs. For example:
+ <p>
+ HyPOOLProgram p = new HyPOOLProgram();<br/>
+ p.addFile("expertRetrieval.pool");<br/>
+ p.addText("peter.friend(mary)");<br/>
+ p.eval("?- Person[ sailing in greece ] & Person.friend(mary);")<br/>
+ </p>
+*/

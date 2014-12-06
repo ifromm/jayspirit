@@ -1,0 +1,5 @@
+22.05.2005, thor:
+HyText2POOL.java: Ingo commented in hyspirit/engines/Makefile the
+line for generating the engine front-end.
+We might need to consolidate this, and merge the current HyText2POOL
+with HyAnalysisEngine.

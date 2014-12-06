@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# Adds lib/junit.jar to CLASSPATH, runs JUnit tests
+#
+# Author: Ingo Frommholz <ingo.frommholz@uni-due.de>
+
+export CLASSPATH=lib/junit.jar:$CLASSPATH
+
+ant test

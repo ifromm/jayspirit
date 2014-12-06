@@ -1,0 +1,17 @@
+01/02/2006:
+Copy HyPSQLEngine, HyPDEngine, HyFVPDEngine, and HyPOOLEngine from Apriorie API
+to HySpirit API.
+
+Adding kb methods to HyEngine.
+
+Adding context methods to HyAnalysisEngine.
+
+Need to discuss design with buildCommand method.
+
+==========
+
+
+==========
+
+Early December 2005: Redesign of HySpirit public domain API
+Creation of Apriorie API

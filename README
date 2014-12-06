@@ -1,0 +1,22 @@
+This is JaySpirit, the Java API to HySpirit. It requires a running HySpirit
+installation; please contact Thomas Roelleke <thor@dcs.qmul.ac.uk> regarding
+this.
+
+To compile classes (to be found in 'classes' directory), type
+  ant compile
+
+To build Javadoc (to be found in 'doc' directory), type
+  ant javadoc
+  
+To build jayspirit.jar, type
+  ant jar
+  
+To run tests, type
+  ./run_tests
+
+If you intend to make changes to the source code, it is requested to contact
+Ingo Frommholz <ingo.frommholz@uni-due.de> for coordination. Please read the
+LICENSE file!
+
+	
+Ingo Frommholz                                 Duisburg/Darmstadt, July 18, 2006
