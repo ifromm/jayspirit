@@ -65,8 +65,16 @@ public class HyTuple implements Comparable<HyTuple> {
      * @param attributeValues
      *            the attribute values of the tuple
      */
-    public HyTuple(double probability, String[] attributeValues) {
+    public HyTuple(double probability, String... attributeValues) {
 	this.probability = probability;
+	this.attributeValues = attributeValues;
+    }
+
+    /**
+     * 
+     * @param attributeValues
+     */
+    public HyTuple(String... attributeValues) {
 	this.attributeValues = attributeValues;
     }
 
@@ -76,9 +84,9 @@ public class HyTuple implements Comparable<HyTuple> {
      * @param attributeValues
      *            the attribute values of the tuple
      */
-    public HyTuple(String[] attributeValues) {
-	this.attributeValues = attributeValues;
-    }
+    // public HyTuple(String[] attributeValues) {
+
+    // }
 
     /**
      * Constructor of class. This constructor takes a line as returned by an
@@ -149,6 +157,7 @@ public class HyTuple implements Comparable<HyTuple> {
 
     /**
      * Returns the probability of this tuple
+     * 
      * 
      * @return the probability
      */
