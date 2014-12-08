@@ -193,8 +193,11 @@ public class HyTuple implements Comparable<HyTuple> {
      */
     @Override
     public String toString() {
+	// we don't print '1'
+	String probPrefix = this.probability == 1 ?
+		"" : probabilityString() + " ";
 	if (stringRepresentation == null) {
-	    stringRepresentation = probabilityString() + " (";
+	    stringRepresentation = probPrefix + "(";
 	    for (int i = 0; i < attributeValues.length; i++) {
 		stringRepresentation += attributeValues[i];
 		if (i < attributeValues.length - 1)
