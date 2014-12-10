@@ -2,6 +2,7 @@
  * Copyright 2000-2006 University of Duisburg-Essen, Working group
  *   "Information Systems"
  * Copyright 2005-2006 Apriorie Ltd.
+ * Copyright 2014 Ingo Frommholz
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy
@@ -16,7 +17,6 @@
  * the License.
  *
  * Created on 14-Dec-2005 16:37:17
- * $Revision: 1.2 $
  */
 package hyspirit.knowledgeBase;
 
@@ -28,12 +28,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * This class represents a tuples as to be found in MDS dfiles or as output of
+ * This class represents a tuples as to be found in MDS files or as output of
  * queries. Each tuple has a certain probability, which is a value between 0 and
  * 1.
  * 
- * @author <a href="mailto:ingo@is.informatik.uni-duisburg.de">Ingo
- *         Frommholz</a>
+ * @author <a href="mailto:ingo@frommholz.org">Ingo Frommholz</a>
  *         <p>
  *         Created on 14.12.2005 16:37:17
  *
@@ -43,6 +42,14 @@ public class HyTuple implements Comparable<HyTuple> {
     private double probability = 1;
     private String[] attributeValues = null;
     private String stringRepresentation = null;
+
+    /** The name of the underlying relation */
+    private String relationName = null;
+
+    /**
+     * Controls whether the relation name should be printed in toString() or not
+     */
+    boolean printRelName = false;
 
     /**
      * Constructor of class.
@@ -71,22 +78,14 @@ public class HyTuple implements Comparable<HyTuple> {
     }
 
     /**
-     * 
-     * @param attributeValues
-     */
-    public HyTuple(String... attributeValues) {
-	this.attributeValues = attributeValues;
-    }
-
-    /**
      * Constructor of class with probability 1.
      * 
      * @param attributeValues
      *            the attribute values of the tuple
      */
-    // public HyTuple(String[] attributeValues) {
-
-    // }
+    public HyTuple(String... attributeValues) {
+	this.attributeValues = attributeValues;
+    }
 
     /**
      * Constructor of class. This constructor takes a line as returned by an
@@ -156,6 +155,37 @@ public class HyTuple implements Comparable<HyTuple> {
     }
 
     /**
+     * This gets the relation name corresponding to this tuple.
+     * 
+     * @return the relation name or null if this is not set
+     */
+    public String getRelationName() {
+	return this.relationName;
+    }
+
+    /**
+     * The relation name corresponding to this tuple can be set here.
+     * 
+     * @param relationName
+     *            the relation name to set
+     */
+    public void setRelationName(String relationName) {
+	this.relationName = relationName;
+    }
+
+    /**
+     * Control whether the relation name should be printed in toString().
+     * 
+     * @param printRelName
+     *            set to {@code true} if the relation name should be printed,
+     *            {@code false} otherwise.
+     * @see HyTuple.toString()
+     */
+    public void printRelationName(boolean printRelName) {
+	this.printRelName = printRelName;
+    }
+
+    /**
      * Returns the probability of this tuple
      * 
      * 
@@ -187,9 +217,13 @@ public class HyTuple implements Comparable<HyTuple> {
 
     /**
      * Returns a string representation of the tuple, i.e., <br>
-     * &lt;prob&gt; (&lt;tokenelement_1&gt;,...,&lt;tokenelement_n&gt;)
+     * &lt;prob&gt; (&lt;tokenelement_1&gt;,...,&lt;tokenelement_n&gt;). A
+     * relation name is printed if said so in printRelationName() (and the
+     * relation name is not null).
      * 
      * @return string representation of the tuple
+     * @see HyTuple.printRelationName()
+     * @see HyTuple.setRelationName()
      */
     @Override
     public String toString() {
