@@ -84,14 +84,46 @@ public class HyTuple implements Comparable<HyTuple> {
      * @param attributeValues
      *            the attribute values of the tuple
      */
-    public HyTuple(String... attributeValues) {
+    public HyTuple(String... attributeValues) throws HyTupleFormatException {
 	// We need to remove any double quotes (")
 	for (int i = 0; i < attributeValues.length; i++) {
 	    if (attributeValues[i] != null) {
-		attributeValues[i] = attributeValues[i].replace("\"", "");
+		String aValue = attributeValues[i];
+		if (aValue.startsWith("\"") && aValue.endsWith("\"")) {
+		    // Process the string within quotes
+		    String cleanVal = cleanStringValue(aValue.substring(1,
+			    aValue.length() - 1));
+		    attributeValues[i] = "\"" + cleanVal + "\"";
+		}
+		else {
+		    /*
+		     * TODO: In a later version we may should refined cleaning so
+		     * the PD terminal symbols are matched:
+		     * 
+		     * NAME     ::= [a-z][A-Za-z0-9_]*
+		     * NUMBER   ::= [-+]?[0-9]+(\.[0-9]+)? | ... <scientific format>
+		     * STRING   ::= "[^\"]*"
+		     */
+		    attributeValues[i] = cleanStringValue(attributeValues[i]);
+		}
 	    }
 	}
 	this.attributeValues = attributeValues;
+    }
+
+    /**
+     * Helper method for cleaning attribute values. Here it means removing
+     * double quotes.
+     * 
+     * @param value
+     *            the attribute value to clean.
+     * @return the cleaned attribute value
+     */
+    private String cleanStringValue(String value) {
+	if (value != null) {
+	    value = value.replace("\"", "");
+	}
+	return value;
     }
 
     /**
