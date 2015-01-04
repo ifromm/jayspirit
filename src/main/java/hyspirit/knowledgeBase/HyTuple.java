@@ -2,7 +2,7 @@
  * Copyright 2000-2006 University of Duisburg-Essen, Working group
  *   "Information Systems"
  * Copyright 2005-2006 Apriorie Ltd.
- * Copyright 2014 Ingo Frommholz
+ * Copyright 2014-2015 Ingo Frommholz
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy
@@ -78,12 +78,19 @@ public class HyTuple implements Comparable<HyTuple> {
     }
 
     /**
-     * Constructor of class with probability 1.
+     * Constructor of class with probability 1. The data will be cleaned, i.e.
+     * possible double quotes will be removed.
      * 
      * @param attributeValues
      *            the attribute values of the tuple
      */
     public HyTuple(String... attributeValues) {
+	// We need to remove any double quotes (")
+	for (int i = 0; i < attributeValues.length; i++) {
+	    if (attributeValues[i] != null) {
+		attributeValues[i] = attributeValues[i].replace("\"", "");
+	    }
+	}
 	this.attributeValues = attributeValues;
     }
 
@@ -115,10 +122,10 @@ public class HyTuple implements Comparable<HyTuple> {
 	}
 
 	/*
-		 * We match attributes by matching the first attribute, removing it,
-		 * matching the first attribute from the remaining attribute string,
-		 * etc.
-		 */
+	 * We match attributes by matching the first attribute, removing it,
+	 * matching the first attribute from the remaining attribute string,
+	 * etc.
+	 */
 	m = Pattern.compile("\\((.*)\\)").matcher(line);
 	if (m.find()) {
 	    String attributeString =
