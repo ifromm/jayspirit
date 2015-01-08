@@ -113,7 +113,7 @@ public class HyTuple implements Comparable<HyTuple> {
 
     /**
      * Helper method for cleaning attribute values. Here it means removing
-     * double quotes.
+     * double quotes and line breaks.
      * 
      * @param value
      *            the attribute value to clean.
@@ -122,6 +122,7 @@ public class HyTuple implements Comparable<HyTuple> {
     private String cleanStringValue(String value) {
 	if (value != null) {
 	    value = value.replace("\"", "");
+	    value = value.replace("\n", "").replace("\r", "");
 	}
 	return value;
     }
