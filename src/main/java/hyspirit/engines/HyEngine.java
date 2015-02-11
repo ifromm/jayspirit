@@ -651,7 +651,7 @@ public abstract class HyEngine implements Runnable {
     }
 
     /**
-     * Send input string to engine. Use Use next() to read the output from the
+     * Send input string to engine. Use next() to read the output from the
      * process. Be sure you read the results of a previous send() first because
      * otherwise they will be dropped!
      * 
@@ -774,7 +774,7 @@ public abstract class HyEngine implements Runnable {
 	    if (streamCatcher != null) {
 		// it might be that the previous stream catcher reads output
 		// from our process. We should wait until it finished.
-		// streamCatcher.waitTillFinished();
+		streamCatcher.waitTillFinished();
 	    }
 	    streamCatcher = new StreamCatcher(out, getStreamEndMessage());
 	    streamCatcher.start();
@@ -830,7 +830,7 @@ public abstract class HyEngine implements Runnable {
     public boolean hasNext() {
 	boolean hasNext = false;
 	if (streamCatcher != null) {
-	    streamCatcher.waitTillFinished(); // XXX avoids streaming, should
+	    // streamCatcher.waitTillFinished(); // XXX avoids streaming, should
 	    // be parameterised!
 	    hasNext = streamCatcher.hasNext();
 	}
