@@ -587,7 +587,7 @@ public class HyPRAEngine extends HyInferenceEngine {
 	    commandVec.add(see);
 	}
 	if (kb != null) {
-	    commandVec.add("-kb");
+	    commandVec.add("-use");
 	    commandVec.add(kb);
 	}
 	if (distinct != null)

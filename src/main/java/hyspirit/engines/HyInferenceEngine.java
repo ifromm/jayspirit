@@ -224,7 +224,7 @@ public abstract class HyInferenceEngine extends HyEngine {
 		List<HyTuple> resultTuples = new ArrayList<HyTuple>();
 		for (String line : resultLines) {
 		    if (line != null && !line.trim().equals("") &&
-			    !line.startsWith("#")) {
+			    !line.startsWith("#") && !line.equals(DELIMITER)) {
 			try {
 			    resultTuples.add(new HyTuple(line));
 			} catch (HyTupleFormatException h) {
