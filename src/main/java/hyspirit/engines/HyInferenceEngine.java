@@ -65,6 +65,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 public abstract class HyInferenceEngine extends HyEngine {
 
     /**
+     * The knowledge base
+     */
+    protected String kb = null;
+
+    /**
      * The query queue
      */
     BlockingQueue<Query> queryQueue = null;
@@ -384,22 +389,13 @@ public abstract class HyInferenceEngine extends HyEngine {
     public void runProgram(String program) {
     }
 
-    // THIS SHOULD GO?
-    // No. ;-) fixed it. - IFr
-    // public String[] buildCommand() {
-    // Vector commandVec = new Vector();
-    // commandVec.add(super.getCommand());
-    //
-    // /*
-    // * Set parameters here.
-    // */
-    //
-    //
-    //
-    // String[] commandString = new String[commandVec.size()];
-    // int i = 0;
-    // for (Enumeration e = commandVec.elements(); e.hasMoreElements();)
-    // commandString[i++] = (String)e.nextElement();
-    // return commandString;
-    // }
+    /**
+     * Determines which knowledge base to use.
+     *
+     * @param kb
+     *            the knowledge base to use
+     */
+    public void useKB(String kb) {
+	this.kb = kb;
+    }
 }

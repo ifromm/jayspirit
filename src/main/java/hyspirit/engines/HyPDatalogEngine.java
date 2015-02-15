@@ -19,7 +19,7 @@ public class HyPDatalogEngine extends HyInferenceEngine {
     /**
      * This constructor must be used if you are going to start your own engine
      * process (client/server mode).
-     * 
+     *
      * @throws HySpiritException
      *             if we can't determine the environment
      */
@@ -31,7 +31,7 @@ public class HyPDatalogEngine extends HyInferenceEngine {
     /**
      * This constructor must be used if you are going to start your own engine
      * process (client/server mode).
-     * 
+     *
      * @param hyspirit
      *            the HySpirit properties containing the environment
      * @throws HySpiritException
@@ -45,7 +45,7 @@ public class HyPDatalogEngine extends HyInferenceEngine {
 
     /**
      * This constructor must be used if you use an engine server (client mode).
-     * 
+     *
      * @param hostname
      *            the server host name
      * @param port
@@ -76,7 +76,7 @@ public class HyPDatalogEngine extends HyInferenceEngine {
 
     /**
      * Sets option to be passed to hy_pra directly.
-     * 
+     *
      * @param hyPRAOpts
      *            the hy_pra options. See hy_pra manual for further details.
      */
@@ -94,7 +94,7 @@ public class HyPDatalogEngine extends HyInferenceEngine {
 
     /**
      * Gets the hy_pd call (command and parameters) as it would be executed
-     * 
+     *
      * @return the hy_pd call
      */
     public String getHyPDCall() {
@@ -124,6 +124,11 @@ public class HyPDatalogEngine extends HyInferenceEngine {
 	if (this.eval != null) {
 	    commandVec.add("-eval");
 	    commandVec.add(eval);
+	}
+
+	if (this.kb != null) {
+	    commandVec.add("-use");
+	    commandVec.add(this.kb);
 	}
 
 	if (to != null) {

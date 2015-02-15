@@ -91,7 +91,6 @@ public class HyPRAEngine extends HyInferenceEngine {
     private String see = null;
     private String distinct = null;
     private String optimise = null;
-    private String kb = null;
     private int joinGroupSize = -1;
     private int maxNumElementsInDisjunction = -1;
     private int maxNumberOfTuples = -1;
@@ -410,17 +409,6 @@ public class HyPRAEngine extends HyInferenceEngine {
 	    this.optimise = "optimise";
 	else
 	    this.optimise = "nooptimise";
-    }
-
-    /**
-     * Determines which knowledge base to use. See hy_pra manual for further
-     * details.
-     *
-     * @param kb
-     *            the knowledge base to use
-     */
-    public void useKB(String kb) {
-	this.kb = kb;
     }
 
     /**
