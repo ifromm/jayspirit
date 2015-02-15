@@ -118,7 +118,7 @@ public class HyPDatalogEngine extends HyInferenceEngine {
      */
     @Override
     protected String[] buildCommand() {
-	Vector commandVec = new Vector();
+	Vector<String> commandVec = new Vector<String>();
 	commandVec.add(super.getCommand());
 
 	if (this.eval != null) {
@@ -157,7 +157,7 @@ public class HyPDatalogEngine extends HyInferenceEngine {
 
 	// STDIN
 	if (stdin) {
-	    commandVec.add("--");
+	    // commandVec.add("--");
 	    commandVec.add("-");
 	}
 
