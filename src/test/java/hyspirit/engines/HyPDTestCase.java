@@ -88,4 +88,53 @@ public class HyPDTestCase extends TestCase {
 
 	}
     }
+
+    /**
+     * A test for an empty result in the query queue
+     */
+    @Test
+    public void testEmptyResultQueryQueue() {
+	if (hypd != null) {
+	    System.out.println("Testing hyp_pd queue empty result.");
+	    hypd.readFromSTDIN();
+	    hypd.run();
+	    try {
+		hypd.addQueryToQueue("emptytest", "?- test(A);\n");
+		hypd.addQueryToQueue("emptytest2",
+			"_arity(test2,2); ?- test2(*);\n");
+		hypd.executeQueryQueue();
+
+		List<HyTuple> retResults =
+			hypd.getResultForQuery("emptytest");
+		System.out.println("\nEmptytest:");
+		String expected = "";
+		String resultString = "";
+		for (HyTuple tuple : retResults) {
+		    resultString += tuple.toString() + "\n";
+		}
+		System.out.println(resultString);
+		assertEquals(resultString, expected);
+
+
+		List<HyTuple> retResults2 =
+			hypd.getResultForQuery("emptytest2");
+		System.out.println("\nEmptytest2:");
+		expected = "";
+		resultString = "";
+		for (HyTuple tuple : retResults2) {
+		    resultString += tuple.toString() + "\n";
+		}
+		System.out.println(resultString);
+		assertEquals(resultString, expected);
+	    }
+
+	    catch (Exception e) {
+		e.printStackTrace();
+		fail(e.getMessage());
+	    } finally {
+		hypd.destroy(); // important!
+	    }
+
+	}
+    }
 }

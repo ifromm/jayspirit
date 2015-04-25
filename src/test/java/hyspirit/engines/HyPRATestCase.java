@@ -93,4 +93,50 @@ public class HyPRATestCase extends TestCase {
 	}
     }
 
+    /**
+     * Test for empty results
+     */
+    @Test
+    public void testEmptyResultQueryQueue() {
+	if (hypra != null) {
+	    System.out.println("Testing hyp_pra query queue empty result.");
+	    hypra.readFromSTDIN();
+	    hypra.run();
+	    try {
+		hypra.addQueryToQueue("emptytest", "?- PROJECT[$1](test).");
+		hypra.addQueryToQueue("emptytest2",
+			"_arity(test2,2); ?- PROJECT[$1](test2).");
+		hypra.executeQueryQueue();
+		String expected = "";
+
+		List<HyTuple> retResults =
+			hypra.getResultForQuery("emptytest");
+		System.out.println("\nEmptytest:");
+		String resultString = "";
+		for (HyTuple tuple : retResults) {
+		    resultString += tuple.toString() + "\n";
+		}
+		System.out.println(resultString);
+		assertEquals(resultString,expected);
+
+
+		resultString = "";
+		retResults = hypra.getResultForQuery("emptytest2");
+		System.out.println("Emptyest2:");
+		for (HyTuple tuple : retResults) {
+		    resultString += tuple + "\n";
+		}
+		System.out.println(resultString);
+		assertEquals(resultString,expected);
+	    }
+
+	    catch (Exception e) {
+		e.printStackTrace();
+		fail(e.getMessage());
+	    }
+	    finally {
+		hypra.destroy(); // important!
+	    }
+	}
+    }
 }
