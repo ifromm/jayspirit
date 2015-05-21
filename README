@@ -1,23 +1,41 @@
+This is JaySpirit, the Java API for HySpirit. It provides some convenience
+classes and a Java interface to execute several HySpirit tools like hyp_pd
+and hyp_pra. It also provides classes to parse the output directly to Java
+objects for further processing. JaySpirit requires a running HySpirit
+installation and does not work without it. Please contact Thomas Roelleke
+<thor@eecs.qmul.ac.uk> to obtain HySpirit.
 
-This is JaySpirit, the Java API to HySpirit. It requires a running HySpirit
-installation; please contact Thomas Roelleke <thor@dcs.qmul.ac.uk> regarding
-this.
+This project uses maven for any compilation, installation and testing. To
+compile, type
 
-To compile classes (to be found in 'classes' directory), type
-  ant compile
+  mvn compile
 
-To build Javadoc (to be found in 'doc' directory), type
-  ant javadoc
-  
-To build jayspirit.jar, type
-  ant jar
-  
-To run tests, type
-  ./run_tests
+To test, type
 
-If you intend to make changes to the source code, it is requested to contact
-Ingo Frommholz <ingo.frommholz@uni-due.de> for coordination. Please read the
-LICENSE file!
+  mvn test
 
-	
-Ingo Frommholz                                 Duisburg/Darmstadt, July 18, 2006
+Please note some tests may be ignored if no HySpirit environment (check
+$HYSPIRIT) is found. It is strongly recommended to run the tests in a
+working HySpirit environment.
+
+To create a .jar file, use
+
+  mvn assembly:assembly
+
+This will create two JaySpirit .jar files in the 'target' directory: one with
+and one without dependencies. Consult the documentation of the Assembly plugin
+for further details.
+
+If you want to install JaySpirit in your local maven directory (usually
+$HOME/.m2/) use
+
+  mvn install
+
+
+If you intend to make changes to the source code and would like to upload them
+to the repository, please contact Ingo Frommholz <ingo@frommholz.org> for
+coordination. Please also read the LICENSE file!
+
+
+Ingo Frommholz                                    Duisburg/Darmstadt, July 2006
+ingo@frommholz.org									  		  Luton, April 2015
