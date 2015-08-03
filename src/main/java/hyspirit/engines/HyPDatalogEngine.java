@@ -1,18 +1,21 @@
 package hyspirit.engines;
 
-import hyspirit.util.HySpiritException;
-import hyspirit.util.HySpiritProperties;
-import hyspirit.util.Util;
-
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
+import hyspirit.util.HySpiritException;
+import hyspirit.util.HySpiritProperties;
+import hyspirit.util.Util;
 
 public class HyPDatalogEngine extends HyInferenceEngine {
 
     private String eval = null;
     private String to = null;
     private String hyPRAOpts = null;
+    private long mdsFileLineLength = -1;
+    private long cacheSize = -1;
+    private long tupleWindowSize = -1;
 
     private static final String ENGINE_NAME = "hyp_pd";
 
@@ -64,6 +67,28 @@ public class HyPDatalogEngine extends HyInferenceEngine {
      */
     public void evalSequential() {
 	this.eval = "sequential";
+    }
+
+    /**
+     * Set the MDS file line length
+     * 
+     * @param mdsFileLineLength
+     */
+    public void setMDSFileLineLength(long mdsFileLineLength) {
+	this.mdsFileLineLength = mdsFileLineLength;
+    }
+
+    /**
+     * Set the cache size
+     * 
+     * @param cacheSize
+     */
+    public void setCacheSize(long cacheSize) {
+	this.cacheSize = cacheSize;
+    }
+
+    public void setTupleWindowSize(long tupleWIndowSize) {
+	this.tupleWindowSize = tupleWIndowSize;
     }
 
     /**
@@ -131,16 +156,24 @@ public class HyPDatalogEngine extends HyInferenceEngine {
 	    commandVec.add(this.kb);
 	}
 
+	if (this.mdsFileLineLength > 0) {
+	    commandVec.add("-mdsFileLineLen");
+	    commandVec.add(Long.toString(this.mdsFileLineLength));
+	}
+
+	if (this.cacheSize > 0) {
+	    commandVec.add("-cache_size");
+	    commandVec.add(Long.toString(this.cacheSize));
+	}
+
+	if (this.tupleWindowSize > 0) {
+	    commandVec.add("-tupleWindowSize");
+	    commandVec.add(Long.toString(this.tupleWindowSize));
+	}
+
 	if (to != null) {
 	    commandVec.add("-to");
 	    commandVec.add(to);
-	}
-
-	// add additional arguments
-	if (super.argumentString != null) {
-	    StringTokenizer strTok = new StringTokenizer(super.argumentString);
-	    while (strTok.hasMoreTokens())
-		commandVec.add(strTok.nextToken());
 	}
 
 	// add additional arguments
