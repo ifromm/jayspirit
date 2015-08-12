@@ -16,6 +16,9 @@ public class HyPDatalogEngine extends HyInferenceEngine {
     private long mdsFileLineLength = -1;
     private long cacheSize = -1;
     private long tupleWindowSize = -1;
+    private long tupleWarningInterval = -1;
+    private long tupleWindowTime = -1;
+    private boolean silent = false;
 
     private static final String ENGINE_NAME = "hyp_pd";
 
@@ -87,8 +90,43 @@ public class HyPDatalogEngine extends HyInferenceEngine {
 	this.cacheSize = cacheSize;
     }
 
+    /**
+     * Set the -silent option
+     * 
+     * @param silent
+     *            the silent to set
+     */
+    public final void setSilent(boolean silent) {
+	this.silent = silent;
+    }
+
+    /**
+     * Set the tuple window size
+     * 
+     * @param tupleWIndowSize
+     */
     public void setTupleWindowSize(long tupleWIndowSize) {
 	this.tupleWindowSize = tupleWIndowSize;
+    }
+
+    /**
+     * Set the tuple warning interval
+     * 
+     * @param tupleWarningInterval
+     *            the tupleWarningInterval to set
+     */
+    public final void setTupleWarningInterval(long tupleWarningInterval) {
+	this.tupleWarningInterval = tupleWarningInterval;
+    }
+
+    /**
+     * Set the tuple window time
+     * 
+     * @param tupleWindowTime
+     *            the tupleWindowTime to set
+     */
+    public final void setTupleWindowTime(long tupleWindowTime) {
+	this.tupleWindowTime = tupleWindowTime;
     }
 
     /**
@@ -170,6 +208,19 @@ public class HyPDatalogEngine extends HyInferenceEngine {
 	    commandVec.add("-tupleWindowSize");
 	    commandVec.add(Long.toString(this.tupleWindowSize));
 	}
+
+	if (this.tupleWarningInterval > 0) {
+	    commandVec.add("-tupleWarningInterval");
+	    commandVec.add(Long.toString(this.tupleWarningInterval));
+	}
+
+	if (this.tupleWindowTime > 0) {
+	    commandVec.add("-tupleWindowTime");
+	    commandVec.add(Long.toString(this.tupleWindowTime));
+	}
+
+	if (silent)
+	    commandVec.addElement("-silent");
 
 	if (to != null) {
 	    commandVec.add("-to");
