@@ -4,6 +4,7 @@ import hyspirit.engines.HyPDatalogEngine;
 import hyspirit.knowledgeBase.HyTuple;
 import hyspirit.util.HySpiritException;
 import hyspirit.util.HySpiritProperties;
+import hyspirit.util.RetrievalstrategyManager;
 
 import java.util.List;
 
@@ -88,6 +89,7 @@ public class HyPDTestCase extends TestCase {
 
 	}
     }
+
 
     /**
      * A test for an empty result in the query queue

@@ -20,12 +20,6 @@
  */
 package hyspirit.engines;
 
-import hyspirit.knowledgeBase.HyTuple;
-import hyspirit.knowledgeBase.HyTupleFormatException;
-import hyspirit.util.HySpiritException;
-import hyspirit.util.HySpiritProperties;
-import hyspirit.util.StreamCatcher;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -34,8 +28,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import hyspirit.knowledgeBase.HyTuple;
+import hyspirit.knowledgeBase.HyTupleFormatException;
+import hyspirit.util.HySpiritException;
+import hyspirit.util.HySpiritProperties;
+import hyspirit.util.RetrievalstrategyManager;
+import hyspirit.util.StreamCatcher;
 
 /**
  * This abstract class provides funtionality for inference engines like hyp_pra,
@@ -70,6 +72,16 @@ public abstract class HyInferenceEngine extends HyEngine {
     protected String kb = null;
 
     /**
+     * The list of files to be executed
+     */
+    protected List<String> files = null;
+
+    /**
+     * A retrieval strategy manager
+     */
+    protected RetrievalstrategyManager rsMgr = null;
+
+    /**
      * The query queue
      */
     BlockingQueue<Query> queryQueue = null;
@@ -94,6 +106,7 @@ public abstract class HyInferenceEngine extends HyEngine {
     public HyInferenceEngine(String engineName)
 	    throws HySpiritException {
 	super(engineName);
+	initFiles();
     }
 
     /**
@@ -110,6 +123,7 @@ public abstract class HyInferenceEngine extends HyEngine {
     public HyInferenceEngine(String engineName, HySpiritProperties hyspirit)
 	    throws HySpiritException {
 	super(engineName, hyspirit);
+	initFiles();
     }
 
     /**
@@ -147,6 +161,23 @@ public abstract class HyInferenceEngine extends HyEngine {
 	sendFile(filename);
     }
 
+    /* (non-Javadoc)
+     * @see hyspirit.engines.HyEngine#reset()
+     */
+    @Override
+    public void reset() {
+	// TODO Auto-generated method stub
+	super.reset();
+	initFiles();
+    }
+
+    /**
+     * Helper class
+     */
+    private void initFiles() {
+	this.files = new Vector<String>();
+    }
+
     /**
      * Adds a query to the queue. "Query" means any HySpirit code that contains
      * exactly one query in the last line (e.g. "?- retrieve(*);" for a hyp_pd
@@ -170,6 +201,53 @@ public abstract class HyInferenceEngine extends HyEngine {
     }
 
     /**
+     * Adds a new PRA or MDS file to be executed by hy_pra. File are executed in
+     * the order they are added with this method.
+     *
+     * @param filename
+     *            name of a PRA or MDS file
+     */
+    public void addFile(String filename) {
+	this.files.add(filename);
+    }
+
+    /**
+     * Executes the given retrieval strategy (by invoking {@link run()})
+     * 
+     * @param retrievalstrategy
+     *            the retrieval strategy
+     * @throws HySpiritException
+     *             if no matching strategy was found
+     * @see RetrievalstrategyManager
+     */
+    public void run(String retrievalstrategy) throws HySpiritException {
+	if (this.rsMgr != null) {
+	    List<String> files = rsMgr.getSequence(retrievalstrategy);
+	    if (files != null) {
+		for (Iterator<String> iter = files.iterator(); iter
+			.hasNext();) {
+		    addFile(iter.next());
+		}
+		run();
+	    } else {
+		throw new HySpiritException("Retrieval strategy "
+			+ retrievalstrategy + "not found.");
+	    }
+	} else
+	    throw new HySpiritException("No retrieval strategy manager found.");
+    }
+
+    /**
+     * Sets the retrieval strategy manager for this engine.
+     * 
+     * @param rsm
+     * @see RetrievalstrategyManager
+     */
+    public void setRetrievalstrategyMgr(RetrievalstrategyManager rsm) {
+	this.rsMgr = rsm;
+    }
+
+    /**
      * Executes all queries in the queue. This method closes the STDIN of the
      * underlying HySpirit process, effectively terminating it. Use this method
      * to run a HySpirit program that contains more than one query. Use the
@@ -189,10 +267,9 @@ public abstract class HyInferenceEngine extends HyEngine {
 	    /*
 	     * Start stream catcher to catch the output and separate it
 	     */
-	    StreamCatcher streamCatcher =
-		    new StreamCatcher(out, DELIMITER,
-			    new LinkedBlockingQueue<HyInferenceEngine.Query>(
-				    queryQueue));
+	    StreamCatcher streamCatcher = new StreamCatcher(out, DELIMITER,
+		    new LinkedBlockingQueue<HyInferenceEngine.Query>(
+			    queryQueue));
 	    // streamCatcher.useQueryQueue(queryQueue);
 	    streamCatcher.start();
 
@@ -212,11 +289,11 @@ public abstract class HyInferenceEngine extends HyEngine {
 	    /*
 	     * Fetch results, translate into HyTuples
 	     */
-	    Map<String, List<String>> results =
-		    streamCatcher.getQueryQueueResults();
+	    Map<String, List<String>> results = streamCatcher
+		    .getQueryQueueResults();
 
-	    Iterator<Map.Entry<String, List<String>>> it =
-		    results.entrySet().iterator();
+	    Iterator<Map.Entry<String, List<String>>> it = results.entrySet()
+		    .iterator();
 
 	    resultSet = new HashMap<String, List<HyTuple>>();
 
@@ -240,8 +317,7 @@ public abstract class HyInferenceEngine extends HyEngine {
 		}
 		resultSet.put(entry.getKey(), resultTuples);
 	    }
-	}
-	else
+	} else
 	    throw new IOException("in, input or out null!");
 
 	queryQueue = null;

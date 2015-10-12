@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<retrievalstrategies>
+	<basedir>pd</basedir>
+	<retrievalstrategy name="basic">
+		<file sequence="1">test1.pd</file>
+		<file sequence="2">test2.pd</file>
+	</retrievalstrategy>
+	<retrievalstrategy name="advanced">
+		<file sequence="1">test1_adv.pd</file>
+		<file sequence="2">test2_adv.pd</file>
+		<file sequence="3">test3_adv.pd</file>
+	</retrievalstrategy>
+</retrievalstrategies>

@@ -21,18 +21,19 @@
  */
 package hyspirit.engines;
 
-import hyspirit.knowledgeBase.HyTuple;
-import hyspirit.util.HySpiritException;
-import hyspirit.util.HySpiritProperties;
-import hyspirit.util.Util;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
+import hyspirit.knowledgeBase.HyTuple;
+import hyspirit.util.HySpiritException;
+import hyspirit.util.HySpiritProperties;
+import hyspirit.util.Util;
 
 /**
  * The HyPRA engine executes and evaluates PRA code using hy_pra. It operates in
@@ -94,7 +95,7 @@ public class HyPRAEngine extends HyInferenceEngine {
     private int joinGroupSize = -1;
     private int maxNumElementsInDisjunction = -1;
     private int maxNumberOfTuples = -1;
-    private Vector files = new Vector();
+
     private String beginExpr = null;
     private String endExpr = null;
     // private boolean stdin = false;
@@ -444,17 +445,6 @@ public class HyPRAEngine extends HyInferenceEngine {
 	this.maxNumberOfTuples = maxNum;
     }
 
-    /**
-     * Adds a new PRA or MDS file to be executed by hy_pra. File are executed in
-     * the order they are added with this method.
-     *
-     * @param filename
-     *            name of a PRA or MDS file
-     */
-    public void addFile(String filename) {
-	this.files.add(filename);
-    }
-
     public void beginExpression(String begin) {
 	this.beginExpr = begin;
     }
@@ -511,7 +501,6 @@ public class HyPRAEngine extends HyInferenceEngine {
 	joinGroupSize = -1;
 	maxNumElementsInDisjunction = -1;
 	stdin = false;
-	files = new Vector();
 	beginExpr = null;
 	endExpr = null;
     }
@@ -613,7 +602,8 @@ public class HyPRAEngine extends HyInferenceEngine {
 	}
 
 	// files
-	for (Enumeration e = files.elements(); e.hasMoreElements();) {
+	for (Enumeration e = Collections.enumeration(files); e
+		.hasMoreElements();) {
 	    String filename = (String) e.nextElement();
 	    commandVec.add(filename);
 	}
@@ -651,8 +641,7 @@ public class HyPRAEngine extends HyInferenceEngine {
 	    wd = input;
 
 	try {
-	    HySpiritProperties hyspirit =
-		    new HySpiritProperties(hsPath, wd);
+	    HySpiritProperties hyspirit = new HySpiritProperties(hsPath, wd);
 	    HyPRAEngine hypra = new HyPRAEngine(hyspirit);
 	    System.out.println();
 	    // System.out.println("1 -- Get Version");
@@ -662,14 +651,13 @@ public class HyPRAEngine extends HyInferenceEngine {
 	    input = Util.readln();
 	    // if (input.equals("1")) System.out.println(hypra.getVersion());
 	    if (input.equals("1")) {
-		String retrieveQuery =
-			"term(database, d1). " +
-				"0.35 term(ir, d2). " +
-				"qterm(ir). \n" +
-				"retrieve = " +
-				"UNITE(retrieve,PROJECT[$3]" +
-				"(JOIN[$1=$1](qterm,term))).\n" +
-				"?- PROJECT[$1](retrieve).";
+		String retrieveQuery = "term(database, d1). " +
+			"0.35 term(ir, d2). " +
+			"qterm(ir). \n" +
+			"retrieve = " +
+			"UNITE(retrieve,PROJECT[$3]" +
+			"(JOIN[$1=$1](qterm,term))).\n" +
+			"?- PROJECT[$1](retrieve).";
 		System.out.println(retrieveQuery + "\n");
 		// hypra.setVerboseQuery(true);
 		hypra.readFromSTDIN();
@@ -679,15 +667,14 @@ public class HyPRAEngine extends HyInferenceEngine {
 		    hypra.addQueryToQueue("qterm", "?- PROJECT[$1](qterm).");
 		    hypra.executeQueryQueue();
 
-		    List<HyTuple> retResults =
-			    hypra.getResultForQuery("retrieve");
+		    List<HyTuple> retResults = hypra
+			    .getResultForQuery("retrieve");
 		    System.out.println("\nRetrieve:");
 		    for (HyTuple tuple : retResults) {
 			System.out.println("> " + tuple);
 		    }
 
-		    List<HyTuple> qtResults =
-			    hypra.getResultForQuery("qterm");
+		    List<HyTuple> qtResults = hypra.getResultForQuery("qterm");
 		    System.out.println("\nQTerm:");
 		    for (HyTuple tuple : qtResults) {
 			System.out.println("> " + tuple);
@@ -698,8 +685,7 @@ public class HyPRAEngine extends HyInferenceEngine {
 		    e.printStackTrace(System.err);
 		}
 		hypra.destroy(); // important!
-	    }
-	    else if (input.equals("2")) {
+	    } else if (input.equals("2")) {
 		System.out.print("Filename: ");
 		String filename = Util.readln();
 		hypra.readFromSTDIN();
@@ -715,8 +701,7 @@ public class HyPRAEngine extends HyInferenceEngine {
 		    e.printStackTrace(System.err);
 		}
 		hypra.destroy(); // important!
-	    }
-	    else
+	    } else
 		System.out.println("Goodbye! :-)");
 	} catch (Exception e) {
 	    e.printStackTrace(System.err);

@@ -20,12 +20,6 @@ s * Copyright 2000-2006 University of Duisburg-Essen, Working group
  */
 package hyspirit.engines;
 
-import hyspirit.knowledgeBase.HyKB;
-import hyspirit.util.HySpiritException;
-import hyspirit.util.HySpiritProperties;
-import hyspirit.util.StreamCatcher;
-import hyspirit.util.StreamGobbler;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -42,6 +36,12 @@ import java.util.Vector;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import hyspirit.knowledgeBase.HyKB;
+import hyspirit.util.HySpiritException;
+import hyspirit.util.HySpiritProperties;
+import hyspirit.util.StreamCatcher;
+import hyspirit.util.StreamGobbler;
+
 /**
  * This class implements all required methods and communications for the
  * HySpirit engines. There are two possible modes:
@@ -57,7 +57,7 @@ import org.apache.logging.log4j.Logger;
  *
  */
 public abstract class HyEngine implements Runnable {
-    private HySpiritProperties hyspirit = null;
+    protected HySpiritProperties hyspirit = null;
     private String command = null;
     private Process process = null;
     public boolean stdin = false;
@@ -110,7 +110,8 @@ public abstract class HyEngine implements Runnable {
 	if (hyspirit == null)
 	    hyspirit = new HySpiritProperties();
 	this.hyspirit = hyspirit;
-	this.command = hyspirit.getHySpiritPath() + "/bin/" + engineName;
+	this.command = hyspirit.getHySpiritPath() + File.separator + "bin"
+		+ File.separator + engineName;
 	this.engineName = engineName;
     }
 
@@ -149,8 +150,7 @@ public abstract class HyEngine implements Runnable {
     /**
      * The format string for the {@code time} command
      */
-    private final static String TIME_FORMAT =
-	    "Real: %E\tUser: %U\tSys: %S\tCPU: %P";
+    private final static String TIME_FORMAT = "Real: %E\tUser: %U\tSys: %S\tCPU: %P";
 
     /**
      * The prefix that identifies a line returned by the {@code time} command
@@ -459,6 +459,7 @@ public abstract class HyEngine implements Runnable {
      * Run command. If in client mode, this does nothing.
      *
      */
+    @Override
     public void run() {
 	if (!clientmode)
 	    run(buildCommand(), hyspirit);
@@ -472,8 +473,7 @@ public abstract class HyEngine implements Runnable {
      * @param com the command plus its arguments
      * @param hyspirit the HySpiritProperties environment
      */
-    private void run(String[] com, HySpiritProperties hyspirit)
-    {
+    private void run(String[] com, HySpiritProperties hyspirit) {
 	if (!clientmode) {
 	    try {
 		if (hyspirit == null)
@@ -504,22 +504,19 @@ public abstract class HyEngine implements Runnable {
 		    }
 		    com = tmpCmd;
 		}
-		process =
-			Runtime.getRuntime().exec(com, null,
-				new File(hyspirit.getWorkingDirectory()));
+		process = Runtime.getRuntime().exec(com, null,
+			new File(hyspirit.getWorkingDirectory()));
 		LOG.debug("Engine started: " + process.toString());
 
 		// handle stderr
-		err =
-			new ErrorStreamHandler(
-				new BufferedReader(
-					new InputStreamReader(
-						process.getErrorStream())),
-				this, LOG);
+		err = new ErrorStreamHandler(
+			new BufferedReader(
+				new InputStreamReader(
+					process.getErrorStream())),
+			this, LOG);
 		err.start();
 
-	    } catch (Exception e)
-	    {
+	    } catch (Exception e) {
 		String command = "";
 		for (int i = 0; i < com.length; i++) {
 		    command += com[i] + " ";
@@ -544,8 +541,7 @@ public abstract class HyEngine implements Runnable {
 		process.destroy();
 		LOG.debug("Process destroyed.");
 		// process = null;
-	    }
-	    else
+	    } else
 		throw new IllegalThreadStateException("Process not started!");
 	}
     }
@@ -585,8 +581,7 @@ public abstract class HyEngine implements Runnable {
 	    if (process != null) {
 		waitFor = process.waitFor();
 		process = null;
-	    }
-	    else
+	    } else
 		throw new IllegalThreadStateException("Process not started!");
 	    return waitFor;
 	}
@@ -643,8 +638,7 @@ public abstract class HyEngine implements Runnable {
 	    if (process != null) {
 		exitValue = process.exitValue();
 		process = null;
-	    }
-	    else
+	    } else
 		throw new IllegalThreadStateException("Process not started!");
 	}
 	return exitValue;
@@ -680,8 +674,8 @@ public abstract class HyEngine implements Runnable {
 	BufferedWriter in = getOutputWriter();
 	if (in != null && filename != null &&
 		!filename.trim().equals("")) {
-	    BufferedReader fileReader =
-		    new BufferedReader(new FileReader(new File(filename)));
+	    BufferedReader fileReader = new BufferedReader(
+		    new FileReader(new File(filename)));
 	    send(fileReader);
 	}
     }
@@ -694,8 +688,7 @@ public abstract class HyEngine implements Runnable {
     protected String getStreamEndMessage() {
 	if (clientmode) {
 	    return "#! END";
-	}
-	else {
+	} else {
 	    return null;
 	}
     }
@@ -728,8 +721,8 @@ public abstract class HyEngine implements Runnable {
 	try {
 	    // Ensure that STDERR of the engine process is read and piped to
 	    // our STDERR.
-	    BufferedWriter bSyserr =
-		    new BufferedWriter(new OutputStreamWriter(System.err));
+	    BufferedWriter bSyserr = new BufferedWriter(
+		    new OutputStreamWriter(System.err));
 	    StreamGobbler err = new StreamGobbler(getSTDERR(), bSyserr,
 		    null);
 	    err.start();
@@ -814,8 +807,7 @@ public abstract class HyEngine implements Runnable {
 	    }
 	    in.flush();
 	    input.close();
-	}
-	else
+	} else
 	    throw new IOException("in, input or out null!");
     }
 
@@ -929,6 +921,21 @@ public abstract class HyEngine implements Runnable {
 	return commandString;
     }
 
+    /**
+     * Returns the command string including paramters or null if there isn't any
+     * 
+     * @return the command string
+     */
+    public String getFullCommand() {
+	if (buildCommand() == null)
+	    return null;
+	String commandString = "";
+	for (String cS : buildCommand()) {
+	    commandString += cS + " ";
+	}
+	return commandString;
+    }
+
     /*
      * Methods dealing with the knowledge base
      */
@@ -995,15 +1002,13 @@ public abstract class HyEngine implements Runnable {
 			    line.startsWith(HyEngine.TIME_PREFIX)) {
 			// line is an output of the time command, so we
 			// parse it and set the values in the engine
-			line =
-				line.substring(HyEngine.TIME_PREFIX.length());
+			line = line.substring(HyEngine.TIME_PREFIX.length());
 			String[] timeOut = line.split("\t");
 			engine.setRealTime(timeOut[0]);
 			engine.setUserTime(timeOut[1]);
 			engine.setSysTime(timeOut[2]);
 			engine.setPercentageCPU(timeOut[3]);
-		    }
-		    else {
+		    } else {
 			if (!engine.suppressSTDERR) {
 			    System.err.println(line);
 			}
