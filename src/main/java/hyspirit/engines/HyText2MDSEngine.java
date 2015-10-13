@@ -93,12 +93,16 @@ public class HyText2MDSEngine extends HyEngine {
      * 
      * @param hyper
      *            flag if fast version should be used or not
+     * @deprecated Always used hyp now
      */
+    @Deprecated
     public void hyper(boolean hyper) {
+	/*
 	if (hyper)
 	    this.hyper = "hyper";
 	else
 	    this.hyper = "nohyper";
+	    */
     }
 
     /**

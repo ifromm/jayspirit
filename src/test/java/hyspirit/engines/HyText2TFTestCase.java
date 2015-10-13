@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import hyspirit.knowledgeBase.HyTuple;
+import hyspirit.util.Util;
 
 /**
  * 
@@ -29,12 +30,17 @@ public class HyText2TFTestCase {
 
     @Test
     public void test() {
+	Util u = new Util();
 	HyText2TFEngine tf = null;
 	try {
 	    tf = new HyText2TFEngine();
 	    tf.stemming(true);
-	    tf.stopwordfile(fileLocation("stopword-list.txt"));
-	    tf.morphemefile(fileLocation("morphemes-list.txt"));
+	    File sFile = u.fileLocation("stopword-list.txt");
+	    File mFile = u.fileLocation("morphemes-list.txt");
+	    if (sFile != null)
+		tf.stopwordfile(sFile.getAbsolutePath());
+	    if (mFile != null)
+		tf.morphemefile(mFile.getAbsolutePath());
 	    System.out.println("Starting");
 	    tf.run();
 	    System.out.println("Sending");
@@ -54,38 +60,6 @@ public class HyText2TFTestCase {
 	} finally {
 	    tf.destroy();
 	}
-    }
-
-    /**
-     * Checks of the file name if present at some pre-defined location. Returns
-     * the absolute path of the file if present or null if it does not exist at
-     * the given locations.
-     *
-     * @param fileName
-     *            the file name
-     * @return the absolute path
-     */
-    private String fileLocation(String fileName) {
-	String baseDir = getClass().getProtectionDomain().getCodeSource()
-		.getLocation().getFile();
-	// check if the test XML document exists at one of the assumed locations
-	File aFile = new File(baseDir + File.separator + "test-classes" +
-		File.separator + fileName);
-	System.out.println("Trying " + aFile.getAbsolutePath());
-	if (!aFile.exists()) {
-	    aFile = new File(baseDir + File.separator
-		    + ".." + File.separator + fileName);
-	    System.out.println("Trying " + aFile.getAbsolutePath());
-	    if (!aFile.exists()) {
-		aFile = new File(baseDir + File.separator
-			+ fileName);
-		System.out.println("Trying " + aFile.getAbsolutePath());
-		if (!aFile.exists()) {
-		    aFile = null;
-		}
-	    }
-	}
-	return aFile.getAbsolutePath();
     }
 
 }
