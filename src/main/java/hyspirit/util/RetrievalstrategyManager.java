@@ -50,6 +50,10 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  */
 public class RetrievalstrategyManager {
+    /**
+     * the base dir
+     */
+    private String basedir = "";
 
     /**
      * The main data structure containing the mapping between retrieval strategy
@@ -64,6 +68,21 @@ public class RetrievalstrategyManager {
     public RetrievalstrategyManager(String configurationXMLFile)
 	    throws ParserConfigurationException, SAXException, IOException {
 	this(new File(configurationXMLFile));
+    }
+
+    /**
+     * Use this constructors if you set the base dir outside the XML file.
+     * 
+     * @param configurationXMLFile
+     *            the XML configuration filename (absolute file name)
+     * @param baseDir
+     *            the base directory where all files for the retrieval
+     *            strategies can be found
+     */
+    public RetrievalstrategyManager(String configurationXMLFile, String baseDir)
+	    throws ParserConfigurationException, SAXException, IOException {
+	this(new File(configurationXMLFile));
+	this.basedir = baseDir;
     }
 
     /**
@@ -94,7 +113,6 @@ public class RetrievalstrategyManager {
 	    private String currentStrategyname = null;
 	    private List<String> currentFileSequence = null;
 	    private int currentSeq = -1;
-	    private String basedir = "";
 	    private String currentFilename = null;
 
 	    /* (non-Javadoc)
