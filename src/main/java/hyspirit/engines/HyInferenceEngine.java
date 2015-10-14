@@ -23,6 +23,11 @@ package hyspirit.engines;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -238,8 +243,49 @@ public abstract class HyInferenceEngine extends HyEngine {
     }
 
     /**
+     * This reads the content of the files that make the retrieval strategy
+     * 
+     * @since 1.2.0
+     * @param retrievalstrategy
+     *            the retrieval strategy to get the code for
+     * @return the code content
+     * @throws HySpiritException
+     *             if something goes wrong
+     * @throws IOException
+     * @throws URISyntaxException
+     */
+    public String getCode(String retrievalstrategy) throws HySpiritException,
+	    IOException, URISyntaxException {
+	String code = null;
+	if (this.rsMgr != null) {
+	    List<String> files = rsMgr.getSequence(retrievalstrategy);
+	    if (files != null) {
+		for (String fileS : files) {
+		    if (code == null)
+			code = "# " + fileS + "\n";
+		    else
+			code += "\n\n# " + fileS + "\n";
+		    URI uri = new URI("file:///" + fileS);
+		    List<String> lines = Files.readAllLines(
+			    Paths.get(uri),
+			    StandardCharsets.UTF_8);
+		    for (String line : lines) {
+			code += line + "\n";
+		    }
+		}
+	    } else {
+		throw new HySpiritException("Retrieval strategy "
+			+ retrievalstrategy + "not found.");
+	    }
+	} else
+	    throw new HySpiritException("No retrieval strategy manager found.");
+	return code;
+    }
+
+    /**
      * Sets the retrieval strategy manager for this engine.
      * 
+     * @since 1.2.0
      * @param rsm
      * @see RetrievalstrategyManager
      */
@@ -405,7 +451,7 @@ public abstract class HyInferenceEngine extends HyEngine {
      */
     @Override
     public String echoSpecial(String message) {
-	return ("_echo(\"" + message + "\").");
+	return ("_echo(\"" + message + "\");\n");
     }
 
     /*

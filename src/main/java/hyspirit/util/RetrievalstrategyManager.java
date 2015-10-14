@@ -51,7 +51,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class RetrievalstrategyManager {
     /**
-     * the base dir
+     * the base dir where we expect the PD/PRA files to be
      */
     private String basedir = "";
 
@@ -62,35 +62,60 @@ public class RetrievalstrategyManager {
     private final Map<String, List<String>> retrievalstrategies = new HashMap<String, List<String>>();
 
     /**
+     *
+     * This constructor expects that the base dir is set in your XML file.
+     * 
      * @param configurationXMLFile
-     *            the XML configuration filename (absolute file name)
+     *            the XML configuration file
+     * 
      */
-    public RetrievalstrategyManager(String configurationXMLFile)
+    public RetrievalstrategyManager(File configurationXMLFile)
 	    throws ParserConfigurationException, SAXException, IOException {
-	this(new File(configurationXMLFile));
+	this(configurationXMLFile, null);
     }
 
     /**
-     * Use this constructors if you set the base dir outside the XML file.
+     *
+     * This constructor expects that the base dir is set in your XML file.
      * 
      * @param configurationXMLFile
      *            the XML configuration filename (absolute file name)
+     * 
+     */
+    public RetrievalstrategyManager(String configurationXMLFile)
+	    throws ParserConfigurationException, SAXException, IOException {
+	this(new File(configurationXMLFile), null);
+    }
+
+    /**
+     * Use this constructor if you set the base dir outside the XML file.
+     * 
+     * @param configurationXMLFile
+     *            the XML configuration file (absolute file name)
+     * 
      * @param baseDir
      *            the base directory where all files for the retrieval
      *            strategies can be found
      */
     public RetrievalstrategyManager(String configurationXMLFile, String baseDir)
 	    throws ParserConfigurationException, SAXException, IOException {
-	this(new File(configurationXMLFile));
-	this.basedir = baseDir;
+	this(new File(configurationXMLFile), baseDir);
     }
 
     /**
+     * Use this constructor if you set the base dir outside the XML file.
+     * 
      * @param configurationXMLFile
      *            the XML configuration file (absolute file name)
+     * 
+     * @param baseDir
+     *            the base directory where all files for the retrieval
+     *            strategies can be found
      */
-    public RetrievalstrategyManager(File configurationXMLFile)
+    public RetrievalstrategyManager(File configurationXMLFile, String baseDir)
 	    throws ParserConfigurationException, SAXException, IOException {
+	this.basedir = baseDir == null ? "" : baseDir;
+
 	SAXParserFactory factory = SAXParserFactory.newInstance();
 
 	/*
