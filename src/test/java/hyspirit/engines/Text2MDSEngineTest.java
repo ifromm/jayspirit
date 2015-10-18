@@ -37,8 +37,9 @@ public class Text2MDSEngineTest {
 		mds.addMorphemeFile(mFile.getAbsolutePath());
 	    System.out.println("Starting");
 	    mds.run();
+	    mds.waitTillRunning();
 	    System.out.println("Sending");
-	    mds.send("hutzliputz hutzliputz hutzliputz is freaking cool");
+	    mds.send("Hutzliputz hutzliputz hutzliputz is freaking cool");
 	    mds.closeSTDIN();
 	    int i = 0;
 	    while (mds.hasNext()) {

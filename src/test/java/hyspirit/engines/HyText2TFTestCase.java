@@ -43,8 +43,9 @@ public class HyText2TFTestCase {
 		tf.morphemefile(mFile.getAbsolutePath());
 	    System.out.println("Starting");
 	    tf.run();
+	    tf.waitTillRunning();
 	    System.out.println("Sending");
-	    tf.send("hutzliputz hutzliputz hutzliputz is freaking cool");
+	    tf.send("Hutzliputz hutzliputz hutzliputz is freaking cool");
 	    tf.closeSTDIN();
 	    int i = 0;
 	    while (tf.hasNext()) {
