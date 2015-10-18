@@ -151,12 +151,13 @@ public class StreamCatcher extends Thread {
      */
     public boolean hasNext() {
 	boolean hasNext = false;
+	waitTillFinished();
 	// waits when not started yet or
 	// until we can determine whether there is a next element
 	// if (verbose) System.out.print("SC.hasNext(): ");
-	while ((contentvec == null) ||
-		(!finished && (contentvec.size() <= cursor))) {
-	}
+	//while ((contentvec == null) ||
+	//	(!finished && (contentvec.size() <= cursor))) {
+	//}
 	if (contentvec.size() > cursor) {
 	    hasNext = true;
 	}
@@ -188,6 +189,7 @@ public class StreamCatcher extends Thread {
      */
     public String next() {
 	String nextLine = null;
+	waitTillFinished();
 	// waits when not started yet or
 	// until we can determine deliver the next element or reading of stream
 	// is finished
@@ -195,9 +197,9 @@ public class StreamCatcher extends Thread {
 	// XXX Check if this solution synchronises well!
 
 	// if (verbose) System.out.print("SC.next(): ");
-	while ((contentvec == null) ||
-		(!finished && (contentvec.size() <= cursor))) {
-	}
+	//while ((contentvec == null) ||
+	//	(!finished && (contentvec.size() <= cursor))) {
+	//}
 	if (contentvec.size() > cursor) {
 	    nextLine = contentvec.elementAt(cursor++);
 	    // if (verbose) System.out.println(nextLine);
@@ -238,7 +240,7 @@ public class StreamCatcher extends Thread {
 	    }
 	    try {
 		while ((line = in.readLine()) != null) {
-		    LOG.trace(line);
+		    System.out.println(line);
 		    // Changed how the end of line delimiter was handled. The
 		    // entire line does not necessarily need to match the
 		    // delimiter.
@@ -285,7 +287,7 @@ public class StreamCatcher extends Thread {
 	    } catch (IOException io) {
 		io.printStackTrace();
 	    }
-	    LOG.debug("StreamCatcher finished.");
+	    LOG.trace("StreamCatcher finished.");
 	    finished = true;
 	    notifyAll();
 	}
