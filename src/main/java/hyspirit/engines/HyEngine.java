@@ -1020,7 +1020,9 @@ public abstract class HyEngine implements Runnable {
 		}
 		completed = true;
 	    } catch (IOException e) {
-		LOG.warn("IOException in error stream handler!", e);
+		// IOExceptions can happen if the stream is closed and
+		// doesn't know. Hence we only send a debug message.
+		LOG.debug("IOException in error stream handler.", e);
 	    }
 	}
     }

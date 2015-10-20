@@ -271,7 +271,9 @@ public class StreamCatcher extends Thread {
 		      }*/
 		}
 	    } catch (IOException io) {
-		io.printStackTrace();
+		// IOExceptions can happen if the stream is closed and
+		// doesn't know. Hence we only send a debug message.
+		LOG.debug("IOException in StreamCatcher", io);
 	    }
 	    LOG.trace("StreamCatcher finished.");
 	    finished = true;
