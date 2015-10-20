@@ -21,9 +21,6 @@
  */
 package hyspirit.util;
 
-import hyspirit.engines.HyInferenceEngine;
-import hyspirit.engines.HyInferenceEngine.Query;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -36,6 +33,9 @@ import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import hyspirit.engines.HyInferenceEngine;
+import hyspirit.engines.HyInferenceEngine.Query;
 
 /**
  * Catches the data from the given stream and stores it in a string. The purpose
@@ -57,7 +57,6 @@ public class StreamCatcher extends Thread {
     private boolean finished = false;
     private Vector<String> contentvec = null;
     private int cursor = 0;
-    private boolean verbose = false;
     Logger LOG = LogManager.getLogger(StreamCatcher.class);
 
     /** The query queue. */
@@ -131,17 +130,6 @@ public class StreamCatcher extends Thread {
     }
 
     /**
-     * Sets or unsets the verbosity mode. In verbosity mode, every line read
-     * from the stream is alos written to System.out.
-     *
-     * @param verbose
-     *            true if verbose mode should be set, false otherwise
-     */
-    public void verbose(boolean verbose) {
-	this.verbose = verbose;
-    }
-
-    /**
      * Returns if there is a next element to read or not. Might block in the
      * situation when all received lines were read and we are waiting for the
      * next line of the stream. In this case, this method waits until the next
@@ -155,15 +143,13 @@ public class StreamCatcher extends Thread {
 	// waits when not started yet or
 	// until we can determine whether there is a next element
 	// if (verbose) System.out.print("SC.hasNext(): ");
-	//while ((contentvec == null) ||
-	//	(!finished && (contentvec.size() <= cursor))) {
-	//}
+	// while ((contentvec == null) ||
+	// (!finished && (contentvec.size() <= cursor))) {
+	// }
 	if (contentvec.size() > cursor) {
 	    hasNext = true;
 	}
-	if (verbose) {
-	    System.out.println(hasNext);
-	}
+	LOG.trace("hasNext=" + hasNext);
 	return hasNext;
     }
 
@@ -197,9 +183,9 @@ public class StreamCatcher extends Thread {
 	// XXX Check if this solution synchronises well!
 
 	// if (verbose) System.out.print("SC.next(): ");
-	//while ((contentvec == null) ||
-	//	(!finished && (contentvec.size() <= cursor))) {
-	//}
+	// while ((contentvec == null) ||
+	// (!finished && (contentvec.size() <= cursor))) {
+	// }
 	if (contentvec.size() > cursor) {
 	    nextLine = contentvec.elementAt(cursor++);
 	    // if (verbose) System.out.println(nextLine);
@@ -240,7 +226,7 @@ public class StreamCatcher extends Thread {
 	    }
 	    try {
 		while ((line = in.readLine()) != null) {
-		    System.out.println(line);
+		    LOG.trace(line);
 		    // Changed how the end of line delimiter was handled. The
 		    // entire line does not necessarily need to match the
 		    // delimiter.
