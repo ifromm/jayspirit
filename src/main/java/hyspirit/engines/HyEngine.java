@@ -71,6 +71,7 @@ public abstract class HyEngine implements Runnable {
     private String sysTime;
     private String userTime;
     private String percentageCPU;
+    private boolean running = false;
 
     protected final static String STREAM_END_MESSAGE = "#! END";
     protected String argumentString = null;
@@ -506,6 +507,7 @@ public abstract class HyEngine implements Runnable {
 		}
 		process = Runtime.getRuntime().exec(com, null,
 			new File(hyspirit.getWorkingDirectory()));
+		running = true;
 		LOG.debug("Engine started: " + process.toString());
 
 		// handle stderr
@@ -537,6 +539,7 @@ public abstract class HyEngine implements Runnable {
      */
     public void destroy() throws IllegalThreadStateException {
 	if (!clientmode) {
+	    running = false;
 	    if (process != null) {
 		process.destroy();
 		LOG.debug("Process destroyed.");
@@ -996,7 +999,7 @@ public abstract class HyEngine implements Runnable {
 	public void run() {
 	    try {
 		String line = null;
-		while ((line = stderr.readLine()) != null) {
+		while (running && (line = stderr.readLine()) != null) {
 		    LOG.trace(line);
 		    if (engine.takesTime() &&
 			    line.startsWith(HyEngine.TIME_PREFIX)) {
@@ -1016,8 +1019,8 @@ public abstract class HyEngine implements Runnable {
 		    }
 		}
 		completed = true;
-	    } catch (Exception e) {
-		LOG.error("Exception in error stream handler!", e);
+	    } catch (IOException e) {
+		LOG.warn("IOException in error stream handler!", e);
 	    }
 	}
     }
