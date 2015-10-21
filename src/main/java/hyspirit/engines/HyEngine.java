@@ -534,18 +534,15 @@ public abstract class HyEngine implements Runnable {
     /**
      * Kills a running process. This does nothing if in client mode.
      * 
-     * @throws IllegalThreadStateException
-     *             if the process hasn't started yet.
      */
-    public void destroy() throws IllegalThreadStateException {
+    public void destroy() {
 	if (!clientmode) {
 	    running = false;
 	    if (process != null) {
 		process.destroy();
 		LOG.debug("Process destroyed.");
 		// process = null;
-	    } else
-		throw new IllegalThreadStateException("Process not started!");
+	    }
 	}
     }
 
