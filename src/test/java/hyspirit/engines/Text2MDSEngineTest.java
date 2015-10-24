@@ -36,6 +36,7 @@ public class Text2MDSEngineTest {
 	    if (mFile != null)
 		mds.addMorphemeFile(mFile.getAbsolutePath());
 	    System.out.println("Starting");
+
 	    mds.run();
 	    mds.waitTillRunning();
 	    System.out.println("Sending");

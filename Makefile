@@ -9,3 +9,8 @@ diff::
 	echo $$i; \
 	diff $(AJA)/src/apriorie/$$i src/hyspirit/$$i; \
 	done
+
+	
+install:
+	mvn clean install
+	

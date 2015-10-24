@@ -29,7 +29,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import hyspirit.engines.HyText2MDSEngine;
+import hyspirit.knowledgeBase.HyTuple;
 
 /**
  * Some utilities
@@ -40,6 +48,9 @@ import java.util.Locale;
  *
  */
 public class Util {
+    protected static Logger LOG = LogManager
+	    .getLogger(Util.class.getName());
+
     /**
      * Reads a line from STDIN and returns it as a String.
      *
@@ -222,4 +233,48 @@ public class Util {
 	return aFile;
     }
 
+    /**
+     * Convenience method that uses the HyText2MDSEngine (hyp_text2mds) to split
+     * ans stem a text.
+     * 
+     * @param text
+     *            the text to be split
+     * @param stemming
+     *            if stemming should be performed
+     * @param stopwordFile
+     *            the file containing stopwords. Set to <code>null</code> to
+     *            avoid stopword elimination.
+     * @param morphemeFile
+     *            the file containing morphemes (words that will not be stemmed)
+     * @return the list of terms
+     * @throws HySpiritException
+     * @throws IOException
+     */
+    public static List<String> splitAndStem(String text, boolean stemming,
+	    String stopwordFile, String morphemeFile)
+		    throws HySpiritException, IOException {
+	List<String> terms = new ArrayList<String>();
+	HyText2MDSEngine mds = null;
+	mds = new HyText2MDSEngine();
+	mds.stemming(stemming);
+	if (stopwordFile != null)
+	    mds.addStopwordFile(stopwordFile);
+	if (morphemeFile != null)
+	    mds.addMorphemeFile(morphemeFile);
+	LOG.debug("Starting split");
+	mds.run();
+	mds.waitTillRunning();
+	LOG.trace("Sending");
+	mds.send(text);
+	mds.closeSTDIN();
+	while (mds.hasNext()) {
+	    HyTuple t = new HyTuple(mds.next());
+	    String term = t.valueAt(0);
+	    LOG.trace(term);
+	    terms.add(term);
+	}
+
+	mds.destroy();
+	return terms;
+    }
 }
