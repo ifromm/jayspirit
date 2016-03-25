@@ -19,6 +19,7 @@ public class HyPDatalogEngine extends HyInferenceEngine {
     private long tupleWarningInterval = -1;
     private long tupleWindowTime = -1;
     private boolean silent = false;
+    private String key; // license key
 
     private static final String ENGINE_NAME = "hyp_pd";
 
@@ -130,6 +131,16 @@ public class HyPDatalogEngine extends HyInferenceEngine {
     }
 
     /**
+     * Set the license key
+     * 
+     * @param key
+     *            the license key
+     */
+    public final void setKey(String key) {
+	this.key = key;
+    }
+
+    /**
      * Recursive translation of rules, not available with some HySpirit
      * releases. See hy_fvpd manual for further details.
      */
@@ -237,6 +248,11 @@ public class HyPDatalogEngine extends HyInferenceEngine {
 	if (hyPRAOpts != null) {
 	    commandVec.add("-pra_opts");
 	    commandVec.add(hyPRAOpts);
+	}
+
+	if (this.key != null) {
+	    commandVec.add("-key");
+	    commandVec.add(this.key);
 	}
 
 	// STDIN
