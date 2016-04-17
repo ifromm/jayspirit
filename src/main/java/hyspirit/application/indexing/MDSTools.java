@@ -206,15 +206,17 @@ public class MDSTools {
      *            the output MDS
      * @param reallyDelete
      *            whether to delete ({@code true}) or mark ({@code false})
+     * @return the number of lines modified or deleted
      * @throws IOException
      *             if there is a problem with the streams
      * @throws HyTupleFormatException
      *             if a line does not represent a tuple, comment or empty line
      * 
      */
-    public static void filterByColumn(int column, Set<String> filterValues,
+    public static int filterByColumn(int column, Set<String> filterValues,
 	    Reader inputMDS, Writer outputMDS,
 	    boolean reallyDelete) throws IOException, HyTupleFormatException {
+	int modified = 0;
 	if (inputMDS != null && outputMDS != null) {
 	    String line = null;
 	    BufferedReader input = new BufferedReader(inputMDS);
@@ -231,6 +233,7 @@ public class MDSTools {
 		HyTuple tuple = new HyTuple(line);
 		if (filterValues.contains(tuple.valueAt(column))) {
 		    // tuple needs to be filtered
+		    modified++;
 		    if (!reallyDelete)
 			lineToWrite = '#' + origline.substring(1);
 		} else
@@ -244,7 +247,7 @@ public class MDSTools {
 	    LOG.warn("inputMDs or outputMDs is null!");
 	    throw new NullPointerException("inputMDS or outputMDS is null!");
 	}
-
+	return modified;
     }
 
     /**
