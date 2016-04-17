@@ -212,10 +212,12 @@ public class MDSToolsTest {
     private void executeTest(int column, Set<String> filterValues,
 	    String expected, boolean delete) {
 	StringWriter resultMDS = new StringWriter();
+	int modified = 0;
 	try {
-	    MDSTools.filterByColumn(column, filterValues,
+	    modified = MDSTools.filterByColumn(column, filterValues,
 		    new StringReader(mdsString),
 		    resultMDS, delete);
+	    resultMDS.close();
 	} catch (NullPointerException | HyTupleFormatException
 		| IOException e) {
 	    LOG.error("Exception caught!", e);
@@ -225,6 +227,7 @@ public class MDSToolsTest {
 	String result = resultMDS.toString();
 	LOG.debug("Expected:\n" + expected + "\n");
 	LOG.debug("Result:\n" + result);
+	LOG.debug("Modified:\n" + modified);
 	if (!result.equals(expected)) {
 	    fail("Got different result from expected:\n" + result
 		    + "\n\nExpected was:\n" + expected);
