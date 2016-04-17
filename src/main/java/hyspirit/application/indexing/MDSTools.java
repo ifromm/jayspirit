@@ -194,7 +194,7 @@ public class MDSTools {
      * tuple. The behaviour whether to delete or mark is controlled using the
      * 'reallyDelete' flag. The method writes to the filtered MDS to a given
      * output stream. The MDS stream must contain one tuple per line. Closes
-     * streams after execution.
+     * input stream after execution, but not the output stream.
      * 
      * @param column
      *            the column to filter (index starts with 0)
@@ -242,7 +242,7 @@ public class MDSTools {
 		    outputMDS.write(lineToWrite + "\n");
 	    }
 	    inputMDS.close();
-	    outputMDS.close();
+	    // outputMDS.close();
 	} else {
 	    LOG.warn("inputMDs or outputMDs is null!");
 	    throw new NullPointerException("inputMDS or outputMDS is null!");
