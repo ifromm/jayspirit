@@ -94,8 +94,7 @@ public class HyTuple implements Comparable<HyTuple> {
 		    String cleanVal = cleanStringValue(aValue.substring(1,
 			    aValue.length() - 1));
 		    attributeValues[i] = "\"" + cleanVal + "\"";
-		}
-		else {
+		} else {
 		    /*
 		     * TODO: In a later version we may should refined cleaning so
 		     * the PD terminal symbols are matched:
@@ -122,6 +121,7 @@ public class HyTuple implements Comparable<HyTuple> {
     private String cleanStringValue(String value) {
 	if (value != null) {
 	    value = value.replace("\"", "");
+	    value = value.replace("'", "");
 	    value = value.replace("\n", "").replace("\r", "");
 	}
 	return value;
@@ -144,8 +144,7 @@ public class HyTuple implements Comparable<HyTuple> {
 	if (m.find()) {
 	    String probString = m.group();
 	    this.probability = Float.parseFloat(probString);
-	}
-	else {
+	} else {
 	    m = Pattern.compile("^\\s*\\((.*)\\)").matcher(line);
 	    if (m.find())
 		this.probability = 1;
@@ -188,8 +187,7 @@ public class HyTuple implements Comparable<HyTuple> {
 	    for (int i = 0; i < attValues.size(); i++) {
 		this.attributeValues[i] = attValues.elementAt(i);
 	    }
-	}
-	else
+	} else
 	    throw new HyTupleFormatException("Malformed attributes in tuple!");
 	// this.stringRepresentation = line;
     }
@@ -268,8 +266,8 @@ public class HyTuple implements Comparable<HyTuple> {
     @Override
     public String toString() {
 	// we don't print '1'
-	String probPrefix = this.probability == 1 ?
-		"" : probabilityString() + " ";
+	String probPrefix =
+		this.probability == 1 ? "" : probabilityString() + " ";
 	if (stringRepresentation == null) {
 	    stringRepresentation = probPrefix + "(";
 	    for (int i = 0; i < attributeValues.length; i++) {
@@ -293,8 +291,7 @@ public class HyTuple implements Comparable<HyTuple> {
      */
     public String probabilityString() {
 	DecimalFormat form =
-		(DecimalFormat)
-		NumberFormat.getNumberInstance(Locale.ENGLISH);
+		(DecimalFormat) NumberFormat.getNumberInstance(Locale.ENGLISH);
 	form.applyPattern("#.######");
 	return form.format(this.probability);
     }
@@ -308,6 +305,7 @@ public class HyTuple implements Comparable<HyTuple> {
      *         this object has a higher probability, 0 if the probability is the
      *         same
      */
+    @Override
     public int compareTo(HyTuple tuple) {
 	if (tuple.probability() > this.probability())
 	    return 1;
