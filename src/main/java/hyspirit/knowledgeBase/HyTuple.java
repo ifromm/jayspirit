@@ -85,26 +85,10 @@ public class HyTuple implements Comparable<HyTuple> {
      *            the attribute values of the tuple
      */
     public HyTuple(String... attributeValues) throws HyTupleFormatException {
-	// We need to remove any double quotes (")
+	// We need to remove any double quotes (") etc
 	for (int i = 0; i < attributeValues.length; i++) {
 	    if (attributeValues[i] != null) {
-		String aValue = attributeValues[i];
-		if (aValue.startsWith("\"") && aValue.endsWith("\"")) {
-		    // Process the string within quotes
-		    String cleanVal = cleanStringValue(aValue.substring(1,
-			    aValue.length() - 1));
-		    attributeValues[i] = "\"" + cleanVal + "\"";
-		} else {
-		    /*
-		     * TODO: In a later version we may should refined cleaning so
-		     * the PD terminal symbols are matched:
-		     * 
-		     * NAME     ::= [a-z][A-Za-z0-9_]*
-		     * NUMBER   ::= [-+]?[0-9]+(\.[0-9]+)? | ... <scientific format>
-		     * STRING   ::= "[^\"]*"
-		     */
-		    attributeValues[i] = cleanStringValue(attributeValues[i]);
-		}
+		attributeValues[i] = cleanStringValue(attributeValues[i]);
 	    }
 	}
 	this.attributeValues = attributeValues;
@@ -112,17 +96,40 @@ public class HyTuple implements Comparable<HyTuple> {
 
     /**
      * Helper method for cleaning attribute values. Here it means removing
-     * double quotes and line breaks.
+     * double quotes and line breaks and put the string in quotes in case there
+     * is a comma. If the string was within double quotes originally, these will
+     * be preserved.
      * 
      * @param value
      *            the attribute value to clean.
      * @return the cleaned attribute value
      */
     private String cleanStringValue(String value) {
+	/*
+	 * TODO: In a later version we may refine cleaning so
+	 * the PD terminal symbols are matched:
+	 * 
+	 * NAME     ::= [a-z][A-Za-z0-9_]*
+	 * NUMBER   ::= [-+]?[0-9]+(\.[0-9]+)? | ... <scientific format>
+	 * STRING   ::= "[^\"]*"
+	 */
 	if (value != null) {
-	    value = value.replace("\"", "");
-	    value = value.replace("\'", "");
-	    value = value.replace("\n", "").replace("\r", "");
+	    value = value.trim();
+	    boolean doubleQuotes =
+		    value.startsWith("\"") && value.endsWith("\"");
+	    value = value
+		    .replace("\"", "")
+		    .replace("\'", "")
+		    .replace("\n", "")
+		    .replace("\r", "");
+
+	    // in case there is a comma in the string, we need to put it in
+	    // quotes.
+	    if (value.contains(","))
+		doubleQuotes = true;
+
+	    if (doubleQuotes)
+		value = "\"" + value + "\"";
 	}
 	return value;
     }
