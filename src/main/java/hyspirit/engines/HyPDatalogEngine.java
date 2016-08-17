@@ -188,6 +188,7 @@ public class HyPDatalogEngine extends HyInferenceEngine {
 
     /*
      * Builds the command string array.
+     * 
      * @see hyspirit.engines.HyEngine#buildCommand()
      */
     @Override
@@ -253,6 +254,11 @@ public class HyPDatalogEngine extends HyInferenceEngine {
 	if (this.key != null) {
 	    commandVec.add("-key");
 	    commandVec.add(this.key);
+	}
+
+	// Files
+	for (String file : this.files) {
+	    commandVec.add(file);
 	}
 
 	// STDIN
