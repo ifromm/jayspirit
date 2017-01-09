@@ -106,12 +106,11 @@ public class HyTuple implements Comparable<HyTuple> {
      */
     private String cleanStringValue(String value) {
 	/*
-	 * TODO: In a later version we may refine cleaning so
-	 * the PD terminal symbols are matched:
+	 * TODO: In a later version we may refine cleaning so the PD terminal
+	 * symbols are matched:
 	 * 
-	 * NAME     ::= [a-z][A-Za-z0-9_]*
-	 * NUMBER   ::= [-+]?[0-9]+(\.[0-9]+)? | ... <scientific format>
-	 * STRING   ::= "[^\"]*"
+	 * NAME ::= [a-z][A-Za-z0-9_]* NUMBER ::= [-+]?[0-9]+(\.[0-9]+)? | ...
+	 * <scientific format> STRING ::= "[^\"]*"
 	 */
 	if (value != null) {
 	    value = value.trim();
@@ -151,7 +150,8 @@ public class HyTuple implements Comparable<HyTuple> {
 	if (m.find()) {
 	    String probString = m.group();
 	    this.probability = Float.parseFloat(probString);
-	} else {
+	}
+	else {
 	    m = Pattern.compile("^\\s*\\((.*)\\)").matcher(line);
 	    if (m.find())
 		this.probability = 1;
@@ -194,7 +194,8 @@ public class HyTuple implements Comparable<HyTuple> {
 	    for (int i = 0; i < attValues.size(); i++) {
 		this.attributeValues[i] = attValues.elementAt(i);
 	    }
-	} else
+	}
+	else
 	    throw new HyTupleFormatException("Malformed attributes in tuple!");
 	// this.stringRepresentation = line;
     }
@@ -304,6 +305,15 @@ public class HyTuple implements Comparable<HyTuple> {
     }
 
     /**
+     * Returns the number of attributes in the tuple
+     * 
+     * @return the number of attributes
+     */
+    public int size() {
+	return attributeValues.length;
+    }
+
+    /**
      * Enables tuples to be sorted w.r.t. descending probabilites
      * 
      * @param tupleObj
@@ -316,10 +326,32 @@ public class HyTuple implements Comparable<HyTuple> {
     public int compareTo(HyTuple tuple) {
 	if (tuple.probability() > this.probability())
 	    return 1;
-	else if (tuple.probability() < this.probability())
-	    return -1;
 	else
-	    return 0;
+	    if (tuple.probability() < this.probability())
+		return -1;
+	    else
+		return 0;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+	if (obj == this) return true;
+	boolean equals = true;
+	if (obj instanceof HyTuple) {
+	    HyTuple tuple = (HyTuple) obj;
+	    if (tuple.size() != this.size()) return false;
+	    if (tuple.probability() != this.probability()) return false;
+	    int index = 0;
+	    for (String attV : this.attributeValues()) {
+		if (!attV.equals(tuple.valueAt(index++))) equals = false;
+	    }
+	}
+	return equals;
     }
 
 }
