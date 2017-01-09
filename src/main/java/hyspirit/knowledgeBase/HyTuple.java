@@ -22,6 +22,7 @@ package hyspirit.knowledgeBase;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Vector;
 import java.util.regex.Matcher;
@@ -336,22 +337,55 @@ public class HyTuple implements Comparable<HyTuple> {
     /*
      * (non-Javadoc)
      * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+	final int prime = 31;
+	int result = 1;
+	result = prime * result + Arrays.hashCode(this.attributeValues);
+	long temp;
+	temp = Double.doubleToLongBits(this.probability);
+	result = prime * result + (int) (temp ^ (temp >>> 32));
+	result = prime * result + ((this.relationName == null) ? 0
+		: this.relationName.hashCode());
+	return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
     public boolean equals(Object obj) {
-	if (obj == this) return true;
-	boolean equals = true;
-	if (obj instanceof HyTuple) {
-	    HyTuple tuple = (HyTuple) obj;
-	    if (tuple.size() != this.size()) return false;
-	    if (tuple.probability() != this.probability()) return false;
-	    int index = 0;
-	    for (String attV : this.attributeValues()) {
-		if (!attV.equals(tuple.valueAt(index++))) equals = false;
+	if (this == obj) {
+	    return true;
+	}
+	if (obj == null) {
+	    return false;
+	}
+	if (!(obj instanceof HyTuple)) {
+	    return false;
+	}
+	HyTuple other = (HyTuple) obj;
+	if (!Arrays.equals(this.attributeValues, other.attributeValues)) {
+	    return false;
+	}
+	if (Double.doubleToLongBits(this.probability) != Double
+		.doubleToLongBits(other.probability)) {
+	    return false;
+	}
+	if (this.relationName == null) {
+	    if (other.relationName != null) {
+		return false;
 	    }
 	}
-	return equals;
+	else
+	    if (!this.relationName.equals(other.relationName)) {
+		return false;
+	    }
+	return true;
     }
 
 }
