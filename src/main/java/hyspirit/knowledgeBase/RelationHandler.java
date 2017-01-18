@@ -1,5 +1,6 @@
 package hyspirit.knowledgeBase;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -32,9 +33,13 @@ import java.util.Map;
  * @author Ingo Frommholz &lt;ingo@frommholz.org&gt;
  *
  */
-public class RelationHandler extends HashMap<String, Collection<HyTuple>> {
+public class RelationHandler extends HashMap<String, Collection<HyTuple>>
+	implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -3085776684024637221L;
 
     /**
      * This Map contains all newly created relations. The key is the relation

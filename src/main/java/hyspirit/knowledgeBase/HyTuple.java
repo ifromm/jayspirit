@@ -20,6 +20,7 @@
  */
 package hyspirit.knowledgeBase;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
@@ -38,7 +39,12 @@ import java.util.regex.Pattern;
  *         Created on 14.12.2005 16:37:17
  *
  */
-public class HyTuple implements Comparable<HyTuple> {
+public class HyTuple implements Comparable<HyTuple>, Serializable {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -8830254829713979656L;
 
     private double probability = 1;
     private String[] attributeValues = null;
