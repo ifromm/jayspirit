@@ -283,8 +283,11 @@ public class HyTuple implements Comparable<HyTuple>, Serializable {
 	// we don't print '1'
 	String probPrefix =
 		this.probability == 1 ? "" : probabilityString() + " ";
+	String relName = "";
+	if (this.printRelName && this.relationName != null)
+	    relName = this.relationName;
 	if (stringRepresentation == null) {
-	    stringRepresentation = probPrefix + "(";
+	    stringRepresentation = probPrefix + relName + "(";
 	    for (int i = 0; i < attributeValues.length; i++) {
 		stringRepresentation += attributeValues[i];
 		if (i < attributeValues.length - 1)

@@ -1,10 +1,11 @@
 package hyspirit.knowledgeBase;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
+import java.util.List;
 /*
  * Copyright 2000-2006 University of Duisburg-Essen, Working group
  *   "Information Systems"
@@ -36,17 +37,7 @@ import java.util.Map;
 public class RelationHandler extends HashMap<String, Collection<HyTuple>>
 	implements Serializable {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = -3085776684024637221L;
-
-    /**
-     * This Map contains all newly created relations. The key is the relation
-     * name and the value is a collection of corresponding HyTuples.
-     */
-    private final Map<String, Collection<HyTuple>> relations =
-	    new HashMap<String, Collection<HyTuple>>();
 
     /**
      * Adds a tuple to a relation.
@@ -57,15 +48,55 @@ public class RelationHandler extends HashMap<String, Collection<HyTuple>>
      *            the tuple to add
      */
     public void addTupleToRelation(String relationName, HyTuple tuple) {
-	if (this.relations != null) {
-	    Collection<HyTuple> tuples = this.get(relationName);
-	    if (tuples == null) {
-		tuples = new LinkedList<HyTuple>();
-		put(relationName, tuples);
-	    }
-	    tuples.add(tuple);
-
+	Collection<HyTuple> tuples = this.get(relationName);
+	if (tuples == null) {
+	    tuples = new LinkedList<HyTuple>();
+	    put(relationName, tuples);
 	}
+	tuples.add(tuple);
+    }
+
+    /**
+     * String representation of a relation. Use toString() to get a
+     * representation for all relations.
+     * 
+     * @param relationName
+     *            the relation under consideration
+     * @param printName
+     * @return String representation of relation
+     */
+    public String relationToString(String relationName, boolean printName) {
+	String s = null;
+	Collection<HyTuple> tuples = this.get(relationName);
+
+	if (tuples != null) {
+	    s = "";
+	    for (HyTuple t : tuples) {
+		if (printName) {
+		    t.setRelationName(relationName);
+		    t.printRelationName(true);
+		}
+		s += t + "\n";
+	    }
+	}
+	return s;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.util.AbstractMap#toString()
+     */
+    @Override
+    public String toString() {
+	String s = "";
+	List<String> keys = new ArrayList<String>(this.keySet());
+	java.util.Collections.sort(keys);
+	for (String key : keys) {
+	    s += relationToString(key, true);
+	}
+
+	return s;
     }
 
 }
