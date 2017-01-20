@@ -48,7 +48,6 @@ public class HyTuple implements Comparable<HyTuple>, Serializable {
 
     private double probability = 1;
     private String[] attributeValues = null;
-    private String stringRepresentation = null;
 
     /** The name of the underlying relation */
     private String relationName = null;
@@ -286,15 +285,13 @@ public class HyTuple implements Comparable<HyTuple>, Serializable {
 	String relName = "";
 	if (this.printRelName && this.relationName != null)
 	    relName = this.relationName;
-	if (stringRepresentation == null) {
-	    stringRepresentation = probPrefix + relName + "(";
-	    for (int i = 0; i < attributeValues.length; i++) {
-		stringRepresentation += attributeValues[i];
-		if (i < attributeValues.length - 1)
-		    stringRepresentation += ", ";
-	    }
-	    stringRepresentation += ")";
+	String stringRepresentation = probPrefix + relName + "(";
+	for (int i = 0; i < attributeValues.length; i++) {
+	    stringRepresentation += attributeValues[i];
+	    if (i < attributeValues.length - 1)
+		stringRepresentation += ", ";
 	}
+	stringRepresentation += ")";
 	return stringRepresentation;
     }
 
