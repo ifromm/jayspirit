@@ -2,6 +2,8 @@ package hyspirit.engines;
 
 import java.io.File;
 import java.util.Enumeration;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.Vector;
 
 import hyspirit.util.HySpiritException;
@@ -22,6 +24,10 @@ public class HyText2TFEngine extends HyAnalysisEngine {
     private String morphemefile = null;
     private boolean stemming = true;
 
+    private Set<Integer> columns = null;
+    private Set<Integer> groupBy = null;
+    private boolean runText2MDS = true;
+
     private static final String ENGINE_NAME = "hy_text2tf";
 
     private String hy_text2mds = "hyp_text2mds";
@@ -38,23 +44,42 @@ public class HyText2TFEngine extends HyAnalysisEngine {
 		+ File.separator + hy_freq2mds;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see hyspirit.engines.HyAnalysisEngine#buildCommand()
      */
     @Override
     protected String[] buildCommand() {
-	String hy_text2mds_call = hy_text2mds;
-	if (stopwordfile != null)
-	    hy_text2mds_call += " -stopwords " + stopwordfile;
-	if (morphemefile != null)
-	    hy_text2mds_call += " -morpheme " + morphemefile;
-	if (stemming)
-	    hy_text2mds_call += " -stemming";
+
+	// hyp_text2mds and its parameters
+	String hy_text2mds_call = "";
+	if (runText2MDS) {
+	    hy_text2mds_call = hy_text2mds;
+	    if (stopwordfile != null)
+		hy_text2mds_call += " -stopwords " + stopwordfile;
+	    if (morphemefile != null)
+		hy_text2mds_call += " -morpheme " + morphemefile;
+	    if (stemming)
+		hy_text2mds_call += " -stemming";
+	    hy_text2mds_call += " - | ";
+	}
+
+	// hyp_mds2freq and its parameters
+	String hy_mds2freq_call = hy_mds2freq;
+	if (columns != null)
+	    for (Integer c : columns)
+	    hy_mds2freq_call += " -col " + c;
+	if (groupBy != null)
+	    for (Integer g : groupBy)
+	    hy_mds2freq_call += " -group " + g;
+	hy_mds2freq_call += " -tupleFreq - | ";
+
 	Vector<String> commandVec = new Vector<String>();
 	commandVec.add("/bin/sh");
 	commandVec.add("-c");
-	commandVec.add(hy_text2mds_call + " - | "
-		+ hy_mds2freq + " -col 1  -tupleFreq - | "
+	commandVec.add(hy_text2mds_call
+		+ hy_mds2freq_call
 		+ hy_freq2mds + " -avg -poissona");
 	String[] commandString = new String[commandVec.size()];
 	int i = 0;
@@ -73,6 +98,40 @@ public class HyText2TFEngine extends HyAnalysisEngine {
      */
     public void stopwordfile(String stopwordfile) {
 	this.stopwordfile = stopwordfile;
+    }
+
+    /**
+     * Add a column for the -col parameter of hyp_mds2freq
+     * 
+     * @param column
+     *            the column to add
+     */
+    public void addColumn(int column) {
+	if (columns == null) columns = new LinkedHashSet<>();
+	columns.add(column);
+    }
+
+    /**
+     * Add a group for the -group parameter of hyp_mds2freq
+     * 
+     * @param group
+     *            the group to add
+     */
+    public void addGroup(int group) {
+	if (groupBy == null) groupBy = new LinkedHashSet<>();
+	groupBy.add(group);
+    }
+
+    /**
+     * Whether or not text2mds should be run. If you set this to {@code false},
+     * make sure split and stem etc. have been running before and you sent
+     * tokens instead of full text to the stream.
+     * 
+     * @param runText2MDS
+     *            {@code true} is the default
+     */
+    public void runText2MDS(boolean runText2MDS) {
+	this.runText2MDS = runText2MDS;
     }
 
     /**
