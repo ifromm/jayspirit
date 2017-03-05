@@ -35,6 +35,7 @@ public class HyText2TFTestCase {
 	try {
 	    tf = new HyText2TFEngine();
 	    tf.stemming(true);
+	    tf.addColumn(1);
 	    File sFile = u.fileLocation("stopword-list.txt");
 	    File mFile = u.fileLocation("morphemes-list.txt");
 	    if (sFile != null)
@@ -55,10 +56,12 @@ public class HyText2TFTestCase {
 		    fail(t + " wrong.");
 	    }
 
-	} catch (Exception e) {
+	}
+	catch (Exception e) {
 	    e.printStackTrace();
 	    fail(e.getMessage());
-	} finally {
+	}
+	finally {
 	    tf.destroy();
 	}
     }
