@@ -82,6 +82,25 @@ public class RelationHandler extends HashMap<String, Collection<HyTuple>>
 	return s;
     }
 
+    /**
+     * Appends the content of the original relation to the new relation (leaving
+     * its existing content untouched)
+     * 
+     * @param relationNameOrig
+     *            the original relation
+     * @param relationNameNew
+     *            the new relation
+     */
+    public void appendRelation(String relationNameOrig,
+	    String relationNameNew) {
+	Collection<HyTuple> origRel = this.get(relationNameOrig);
+	if (origRel != null) {
+	    for (HyTuple t : origRel) {
+		addTupleToRelation(relationNameNew, new HyTuple(t));
+	    }
+	}
+    }
+
     /*
      * (non-Javadoc)
      * 

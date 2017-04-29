@@ -432,7 +432,7 @@ public class RankedList {
     public String toString() {
 	String resultS = "";
 	for (ResultItem r : this.getList())
-	    resultS += r + "\n";
+	    resultS += r.toString() + "\n";
 	return resultS;
     }
 

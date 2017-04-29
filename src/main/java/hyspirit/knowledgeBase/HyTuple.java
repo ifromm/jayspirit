@@ -71,6 +71,17 @@ public class HyTuple implements Comparable<HyTuple>, Serializable {
     }
 
     /**
+     * This constructor copies all values of the provided HyTuple
+     * 
+     * @param tuple
+     *            the tuple to copy
+     */
+    public HyTuple(HyTuple tuple) {
+	this(tuple.probability, tuple.attributeValues.clone());
+	setRelationName(tuple.getRelationName());
+    }
+
+    /**
      * Constructor of class.
      * 
      * @param probability
