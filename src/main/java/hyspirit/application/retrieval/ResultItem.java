@@ -21,11 +21,11 @@
  */
 package hyspirit.application.retrieval;
 
-import hyspirit.knowledgeBase.HyTuple;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
+
+import hyspirit.knowledgeBase.HyTuple;
 
 /**
  * Simple class for items of retrieval result sets, consisting of a retrieval
@@ -93,8 +93,7 @@ public class ResultItem implements Comparable<ResultItem> {
      */
     public String rsvString() {
 	DecimalFormat form =
-		(DecimalFormat)
-		NumberFormat.getNumberInstance(Locale.ENGLISH);
+		(DecimalFormat) NumberFormat.getNumberInstance(Locale.ENGLISH);
 	form.applyPattern("#.######");
 	return form.format(this.rsv);
     }
@@ -107,13 +106,26 @@ public class ResultItem implements Comparable<ResultItem> {
      * @return 1, if this object has a lower RSV than the other, -1, if this
      *         object has a higher RSV, 0 if the RSV is the same
      */
+    @Override
     public int compareTo(ResultItem rItem) {
 	ResultItem r = rItem;
 	if (r.getRSV() > this.getRSV())
 	    return 1;
-	else if (r.getRSV() < this.getRSV())
-	    return -1;
 	else
-	    return 0;
+	    if (r.getRSV() < this.getRSV())
+		return -1;
+	    else
+		return 0;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+	return this.getRSV() + " " + this.getURI();
+    }
+
 }

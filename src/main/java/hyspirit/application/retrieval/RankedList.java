@@ -62,7 +62,8 @@ public class RankedList {
 	if (ranking.size() > 0) {
 	    sort();
 	    return ranking;
-	} else
+	}
+	else
 	    return null;
     }
 
@@ -231,7 +232,8 @@ public class RankedList {
 		while ((line = s.readLine()) != null)
 		    add(new ResultItem(new HyTuple(line)));
 		sort();
-	    } catch (IOException io) {
+	    }
+	    catch (IOException io) {
 		io.printStackTrace(System.err);
 	    }
 	}
@@ -287,7 +289,7 @@ public class RankedList {
      * Writes the ranked list into a TREC result file
      * 
      * @param filename
-     *            the fiolename of the TREC result file
+     *            the filename of the TREC result file
      * @param queryID
      *            the TREC query ID
      * @param runID
@@ -306,7 +308,7 @@ public class RankedList {
 	    int limit,
 	    boolean append,
 	    boolean stripQuotationMarks)
-		    throws IOException {
+	    throws IOException {
 	FileWriter fw = new FileWriter(filename, append);
 	sort();
 	List<ResultItem> resultlist = limit > 0 ? getFirstElements(limit)
@@ -396,24 +398,42 @@ public class RankedList {
 		    System.out.println(rItem.getRSV() + "\t" + rItem.getURI());
 		}
 	    }
-	} else if (input.equals("2")) {
-	    System.out.println("\nPlease input the HySpirit result " +
-		    "(insert empty line when finished):");
-	    String hyspiritResult = "";
-	    while (!((input = Util.readln()).equals(""))) {
-		hyspiritResult += input + "\n";
-	    }
-	    RankedList ranking = new RankedList();
-	    ranking.parseHySpiritResult(hyspiritResult);
-	    List<ResultItem> rankedList = ranking.getList();
-	    if (rankedList != null) {
-		for (int i = 0; i < rankedList.size(); i++) {
-		    ResultItem rItem = rankedList.get(i);
-		    System.out.println(rItem.getRSV() + "\t" + rItem.getURI());
+	}
+	else
+	    if (input.equals("2")) {
+		System.out.println("\nPlease input the HySpirit result " +
+			"(insert empty line when finished):");
+		String hyspiritResult = "";
+		while (!((input = Util.readln()).equals(""))) {
+		    hyspiritResult += input + "\n";
 		}
-	    }
+		RankedList ranking = new RankedList();
+		ranking.parseHySpiritResult(hyspiritResult);
+		List<ResultItem> rankedList = ranking.getList();
+		if (rankedList != null) {
+		    for (int i = 0; i < rankedList.size(); i++) {
+			ResultItem rItem = rankedList.get(i);
+			System.out.println(
+				rItem.getRSV() + "\t" + rItem.getURI());
+		    }
+		}
 
-	} else
-	    System.out.println("Goodbye! :-)");
+	    }
+	    else
+		System.out.println("Goodbye! :-)");
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+	String resultS = "";
+	for (ResultItem r : this.getList())
+	    resultS += r + "\n";
+	return resultS;
+    }
+
 }
